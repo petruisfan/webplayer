@@ -1,14 +1,12 @@
 window.Class = {
     Model: {
         PlayList: Backbone.Model.extend({
-            url: "rest/list/",
-
             initialize: function() {
                 this.on("change", function(model) {
                     console.log("PlayList loaded");
                     new Class.View.PlayList({
                         model: model,
-                        el: $("ul.thumbnails")
+                        el: $("ul#playlist")
                     })
                 })
             }
@@ -22,6 +20,7 @@ window.Class = {
             },
             render: function() {
                 this.$el.html(this.template(this.model.toJSON()));
+                App.currentFolder = this.model.get("folder");
             }
         })
     }
