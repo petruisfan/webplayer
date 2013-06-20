@@ -1,0 +1,52 @@
+body {
+    margin: 0px;
+}
+.header {
+    background: #001;
+    margin: 0px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.header h1 {
+    margin: 0px;
+    padding: 7px;
+}
+.header a {
+    text-decoration: none;
+    color: #fff;
+    font-family: serif;
+}
+
+.list ul {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+.list ul li {
+    padding: 15px;
+    font-family: serif;
+    font-size: 15px;
+    background: rgb(252,255,244); /* Old browsers */
+
+    background: -moz-linear-gradient(top, rgba(252,255,244,1) 37%, rgba(233,233,206,1) 100%); /* FF3.6+ */
+    background: -webkit-linear-gradient(top, rgba(252,255,244,1) 37%,rgba(233,233,206,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: linear-gradient(to bottom, rgba(252,255,244,1) 37%,rgba(233,233,206,1) 100%); /* W3C */
+}
+.list a {
+    text-decoration: none;
+    color: #00f;
+}
+
+.song {
+    display: inline;
+    cursor: pointer;
+}
+
+.player {
+    background: #fff;
+    border-radius: 5px;
+    margin: 7px;
+}
+.player p {
+    margin-left: 20px;
+}
