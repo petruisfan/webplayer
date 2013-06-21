@@ -4,16 +4,10 @@
  * Time: 12:34 PM
  */
 window.Util = {
-    serverRoot: "/webplayer/",
     serverApi: "/webplayer/rest/",
+    pauseUrl: "/webplayer/rest/pause",
+    stopUrl: "/webplayer/rest/stop",
 
-    addServerRoot: function(path) {
-        return this.serverRoot + path;
-    },
-
-    removeServerRoot: function(url) {
-        return url.substring(this.serverRoot.length);
-    },
 
     isMp3: function(file) {
         var suffix = ".mp3";

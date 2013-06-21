@@ -35,6 +35,7 @@ body {
 .list a {
     text-decoration: none;
     color: #00f;
+    font-weight: bold;
 }
 
 .song {
@@ -46,7 +47,23 @@ body {
     background: #fff;
     border-radius: 5px;
     margin: 7px;
+    border: 1px solid black;
 }
 .player p {
     margin-left: 20px;
+    display: inline;
+}
+
+.progressbar_back {
+    background-color: black;
+    border-radius: 13px; /* (height of inner div) / 2 + padding */
+    padding: 3px;
+    margin: 15px;
+}
+
+#progressbar {
+    background-color: orange;
+    width: 0%; /* Adjust with JavaScript */
+    height: 10px;
+    border-radius: 10px;
 }

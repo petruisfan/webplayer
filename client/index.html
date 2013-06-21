@@ -13,10 +13,9 @@
     <div class="header">
         <h1><a href="">Webplayer</a></h1>
     </div>
-
     <div id="fileList" class="list"></div>
 </div>
-
+<!-- Templates -->
 <script type="text/plain" id="fileListTemplate">
     <ul>
         <li>
@@ -39,13 +38,17 @@
     </ul>
 </script>
 
-<script type="text/plain" id="playerDiv">
+<script type="text/plain" id="playerDivTemplate">
     <div id='player' class="player"></div>
 </script>
 
 <script type="text/plain" id="playerTemplate">
     <p id="icon_pause" onclick="App.pause(this)" class="iconic iconic-pause"></p>
     <p id="icon_stop" onclick="App.stop()" class="iconic iconic-stop"></p>
+    <p>Length: <%= length %></p>
+    <div class="progressbar_back">
+        <div id="progressbar"></div>
+    </div>
 </script>
 
 <script type="text/javascript" src="js/lib/jquery-1.9.1_full.js"></script>

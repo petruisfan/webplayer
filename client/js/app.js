@@ -5,9 +5,10 @@
  */
 
 var App = new (Backbone.View.extend({
-    currentFolder: "",
-    playerItem: null,
-    paused: false,
+    currentFolder: "",  // current folder in the list view
+    playerItem: null,   // Jquery player item element
+    paused: false,      // marks if the song is paused or not
+    timer: null,        // used for progressbar update
 
 
     /**
@@ -30,7 +31,6 @@ var App = new (Backbone.View.extend({
         "click a" : function(e) {
             e.preventDefault();
             var url = e.currentTarget.pathname
-
             if (url) {
                 Backbone.history.navigate(url, {trigger: true});
             }
@@ -43,7 +43,7 @@ var App = new (Backbone.View.extend({
 
     play: function(li) {
         //
-        // If we have only the <p> inside, and not the div#player
+        // If we have only the <p>'s inside, and not the div#player
         //
         if ( $(li).children().length == 2 ) {
             var songName = $(li).text().trim(),
@@ -51,25 +51,26 @@ var App = new (Backbone.View.extend({
 
             console.log("Playing: " + songName);
             App.paused = false;
+            clearInterval(App.timer);
 
             if (App.playerItem) {
                 App.playerItem.remove();
             }
 
-            $(li).append($("#playerDiv").html());
+            $(li).append($("#playerDivTemplate").html());
             App.playerItem = $("div#player");
             player.url = encodeURI(Util.serverApi + "play" + App.currentFolder + "/" + songName);
 
             player.fetch({
+                timeout: 50000,
                 error: Util.alert("Unable to play " + player.url)
             });
         }
     },
     pause: function(icon) {
         $.ajax({
-            url: "/webplayer/rest/pause",
+            url: Util.pauseUrl,
             success: function() {
-                console.log("Paused successfully");
                 if (App.paused) {
                     $(icon).removeClass("iconic-play").addClass("iconic-pause");
                 } else {
@@ -78,19 +79,19 @@ var App = new (Backbone.View.extend({
                 App.paused = ! App.paused;
             },
             error: function() {
-                console.log("Paused failed")
+                Util.alert("Paused failed")
             }
         });
     },
     stop: function() {
         $.ajax({
-            url: "/webplayer/rest/stop",
+            url: Util.stopUrl,
             success: function() {
-                console.log("Stopped successfully");
                 $("p#icon_pause").removeClass("iconic-pause").addClass("iconic-play");
+                clearInterval(App.timer);
             },
             error: function() {
-                console.log("Stopped failed")
+                Util.alert("Stopped failed")
             }
         })
     },
@@ -98,8 +99,6 @@ var App = new (Backbone.View.extend({
     router: new (Backbone.Router.extend({
         routes: {
             "list/*path": "list",
-            "stop": "stop",
-            "pause": "pause",
             "": "home"
         },
 

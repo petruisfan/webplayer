@@ -1,10 +1,11 @@
 {
-  "name": "server",
-  "description": "hello world test app",
-  "version": "0.0.1",
-  "private": true,
-  "dependencies": {
-    "express": "3.1.x"
-  }
+    "name": "webplayer",
+    "description": "Server for playing music localy",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "express": "3.1.x",
+        "socket.io": "0.9.x"
+    }
 }
 
