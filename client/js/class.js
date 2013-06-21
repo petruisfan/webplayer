@@ -44,21 +44,45 @@ window.Class = {
                 try {
                     var length = this.model.get("length").split(":");
                     var seconds = length[0] * 60 + parseInt(length[1]);
-                    var unit = 100 / seconds;
-                    var progress = 0;
-
-                    App.timer = setInterval(function() {
-                        progress += unit;
-                        $("div#progressbar").css("width", progress);
-
-                        if (progress >= 100) {
-                            clearInterval(App.timer);
-                        }
-                    }, 1000);
+                    App.progressbar = new Class.View.ProgressBar(seconds);
+                    App.progressbar.start();
                 } catch ( e ){
                     Util.alert("Error trying to start progressbar.")
                 }
             }
-        })
+        }),
+        ProgressBar: function(seconds) {
+            var unit = 100 / seconds,
+                progress = 0,
+                timer = null,
+                progressbar = $("div#progressbar");
+
+            this.start = function() {
+                timer = setInterval(this.updateProgress, 1000);
+            };
+
+            this.stop = function() {
+                clearInterval(timer);
+                progressbar.css("width", 0);
+            };
+
+            this.pause = function() {
+                if ( App.paused) {
+                    timer = setInterval(this.updateProgress, 1000);
+                } else {
+                    clearInterval(timer);
+                }
+            };
+
+            this.updateProgress = function() {
+                progress += unit;
+                progressbar.css("width", progress + "%");
+                if (progress >= 100) {
+                    clearInterval(timer);
+                }
+                console.log(progress);
+            };
+        }
+
     }
 }

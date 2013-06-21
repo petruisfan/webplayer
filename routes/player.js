@@ -8,26 +8,11 @@ var serverRoot="/data/media/music/",
 
 exports.list = function(req, res) {
     var id = req.params,
-        json = [],
         dir =  serverRoot + id;
 
     console.log("requesting " + id);
-    //
-    // if requested file is directory
-    //
-    if (fs.existsSync(dir) && fs.lstatSync(dir).isDirectory()) {
-        fs.readdir(serverRoot + id, function (err, files) {
-            if (err) {
-                res.send("Error reading files");
-            }
-            for (var index in files) {
-                json.push(files[index]);
-            }
-            res.send({"files": json});
-        });
-    } else {
-        res.send("Requested file is not a directory!");
-    }
+    var result = ls(dir);
+    res.send({"files": result});
 };
 
 exports.play = function(req, res) {
@@ -45,7 +30,9 @@ exports.play = function(req, res) {
     child.on('close', function (code) {
         if (code !== 0) {
             console.log('Mplayer process exited with code ' + code);
+            return;
         }
+        playNext(file);
     });
 
     var p = spawn("mp3info", ["-p", "%m:%s", file]);
@@ -79,7 +66,55 @@ exports.next = function(req, res) {
 
 var stopPlayback = function() {
     if (child) {
+        child.stdin.write("q\n")
         child.kill();
         child = null;
     }
+}
+
+var ls = function(dir) {
+    //
+    // if requested file is a directory
+    //
+    if (fs.existsSync(dir) && fs.lstatSync(dir).isDirectory()) {
+        var files = fs.readdirSync(dir);
+
+        return files;
+    } else {
+        // TODO return code response;
+        return "Requested file is not a directory!";
+    }
+}
+
+var playNext = function(file) {
+    var dir = dirname(file),
+        files = ls(dir),
+        index = files.indexOf(basename(file)) + 1;
+
+    if (index >= files.length) {
+        index = 0;
+    }
+    var next_file = dir + files[index];
+    console.log("Next playing " + next_file);
+
+    child = spawn(player, ["-slave", next_file]);
+    child.on('close', function (code) {
+        if (code !== 0) {
+            console.log('Mplayer process exited with code ' + code);
+            return;
+        }
+        playNext(next_file);
+    });
+}
+
+var dirname = function(folder) {
+    folder = folder.substring(0, folder.length-1);
+    var end = folder.lastIndexOf("/");
+
+    return folder.substring(0,end) + "/";
+}
+
+var basename = function(file) {
+    var end = file.lastIndexOf("/");
+    return file.substring(end+1) ;
 }

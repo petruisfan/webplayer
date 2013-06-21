@@ -8,7 +8,7 @@ var App = new (Backbone.View.extend({
     currentFolder: "",  // current folder in the list view
     playerItem: null,   // Jquery player item element
     paused: false,      // marks if the song is paused or not
-    timer: null,        // used for progressbar update
+    progressbar: null,        // used for progressbar update
 
 
     /**
@@ -46,12 +46,14 @@ var App = new (Backbone.View.extend({
         // If we have only the <p>'s inside, and not the div#player
         //
         if ( $(li).children().length == 2 ) {
+            if (App.progressbar) {
+                App.progressbar.stop();
+            }
             var songName = $(li).text().trim(),
                 player = new Class.Model.Player();
 
             console.log("Playing: " + songName);
             App.paused = false;
-            clearInterval(App.timer);
 
             if (App.playerItem) {
                 App.playerItem.remove();
@@ -62,7 +64,6 @@ var App = new (Backbone.View.extend({
             player.url = encodeURI(Util.serverApi + "play" + App.currentFolder + "/" + songName);
 
             player.fetch({
-                timeout: 50000,
                 error: Util.alert("Unable to play " + player.url)
             });
         }
@@ -76,6 +77,7 @@ var App = new (Backbone.View.extend({
                 } else {
                     $(icon).removeClass("iconic-pause").addClass("iconic-play");
                 }
+                App.progressbar.pause();
                 App.paused = ! App.paused;
             },
             error: function() {
@@ -88,7 +90,7 @@ var App = new (Backbone.View.extend({
             url: Util.stopUrl,
             success: function() {
                 $("p#icon_pause").removeClass("iconic-pause").addClass("iconic-play");
-                clearInterval(App.timer);
+                App.progressbar.stop();
             },
             error: function() {
                 Util.alert("Stopped failed")
